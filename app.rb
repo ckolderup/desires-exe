@@ -66,4 +66,9 @@ client = Twitter::REST::Client.new do |config|
   config.access_token_secret = ENV['TWITTER_OAUTH_SECRET']
 end
 
-client.update_with_media(random_text, image(random_imgur_url))
+begin
+  tries ||= 5
+  client.update_with_media(random_text, image(random_imgur_url))
+rescue Twitter::Error => e
+  retry unless (tries -= 1).zero?
+end
